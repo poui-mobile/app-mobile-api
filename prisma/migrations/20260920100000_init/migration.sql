@@ -1,0 +1,13 @@
+CREATE TABLE "tenant" ("tenant_id" VARCHAR(32) NOT NULL,"descricao" VARCHAR(100) NOT NULL,"mail_owner" VARCHAR(250) NOT NULL,"token_confirmation" VARCHAR(32),CONSTRAINT "tenant_pkey" PRIMARY KEY ("tenant_id"));
+CREATE TABLE "usuario" ("id" TEXT NOT NULL,"tenant_id" VARCHAR(32) NOT NULL,"nome" VARCHAR(120) NOT NULL,"email" VARCHAR(250) NOT NULL,"senha" VARCHAR(255) NOT NULL,CONSTRAINT "usuario_pkey" PRIMARY KEY ("id"));
+CREATE TABLE "conta" ("id" TEXT NOT NULL,"tenant_id" VARCHAR(32) NOT NULL,"nome" VARCHAR(100) NOT NULL,"saldo" DECIMAL(15,2) NOT NULL DEFAULT 0,"ativo" BOOLEAN NOT NULL DEFAULT true,CONSTRAINT "conta_pkey" PRIMARY KEY ("id"));
+CREATE TABLE "categoria" ("id" TEXT NOT NULL,"tenant_id" VARCHAR(32) NOT NULL,"nome" VARCHAR(100) NOT NULL,"tipo" VARCHAR(1) NOT NULL,CONSTRAINT "categoria_pkey" PRIMARY KEY ("id"));
+CREATE TABLE "transacao" ("id" TEXT NOT NULL,"tenant_id" VARCHAR(32) NOT NULL,"conta_id" TEXT NOT NULL,"categoria_id" TEXT,"tipo" VARCHAR(1) NOT NULL,"descricao" VARCHAR(200) NOT NULL,"valor" DECIMAL(15,2) NOT NULL,"data" TIMESTAMP(3) NOT NULL,"status" VARCHAR(1) NOT NULL,CONSTRAINT "transacao_pkey" PRIMARY KEY ("id"));
+CREATE UNIQUE INDEX "usuario_email_key" ON "usuario"("email");
+CREATE INDEX "usuario_tenant_id_idx" ON "usuario"("tenant_id"); CREATE INDEX "conta_tenant_id_idx" ON "conta"("tenant_id"); CREATE INDEX "categoria_tenant_id_idx" ON "categoria"("tenant_id"); CREATE INDEX "transacao_tenant_id_idx" ON "transacao"("tenant_id"); CREATE INDEX "transacao_conta_id_idx" ON "transacao"("conta_id"); CREATE INDEX "transacao_categoria_id_idx" ON "transacao"("categoria_id");
+ALTER TABLE "usuario" ADD CONSTRAINT "usuario_tenant_id_fkey" FOREIGN KEY ("tenant_id") REFERENCES "tenant"("tenant_id") ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE "conta" ADD CONSTRAINT "conta_tenant_id_fkey" FOREIGN KEY ("tenant_id") REFERENCES "tenant"("tenant_id") ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE "categoria" ADD CONSTRAINT "categoria_tenant_id_fkey" FOREIGN KEY ("tenant_id") REFERENCES "tenant"("tenant_id") ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE "transacao" ADD CONSTRAINT "transacao_tenant_id_fkey" FOREIGN KEY ("tenant_id") REFERENCES "tenant"("tenant_id") ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE "transacao" ADD CONSTRAINT "transacao_conta_id_fkey" FOREIGN KEY ("conta_id") REFERENCES "conta"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE "transacao" ADD CONSTRAINT "transacao_categoria_id_fkey" FOREIGN KEY ("categoria_id") REFERENCES "categoria"("id") ON DELETE SET NULL ON UPDATE CASCADE;
