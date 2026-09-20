@@ -1,1 +1,1 @@
-{"version":2,"builds":[{"src":"src/server.ts","use":"@vercel/node"}],"routes":[{"src":"/(.*)","dest":"src/server.ts"}]}
+{"version":2,"buildCommand":"prisma generate && npm run build","outputDirectory":"dist","functions":{"src/server.ts":{"runtime":"nodejs22.x"}},"routes":[{"src":"/(.*)","dest":"/src/server.ts"}]}
